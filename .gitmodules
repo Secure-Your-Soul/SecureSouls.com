@@ -1,0 +1,43 @@
+[submodule "Auth"]
+	path = Auth
+	url = https://github.com/Secure-Your-Soul/Auth.git
+
+[submodule "Blog"]
+	path = Blog
+	url = https://github.com/Secure-Your-Soul/Blog.git
+
+[submodule "Dashboard"]
+	path = Dashboard
+	url = https://github.com/Secure-Your-Soul/Dashboard.git
+
+[submodule "DenisKontek"]
+	path = DenisKontek
+	url = https://github.com/Secure-Your-Soul/DenisKontek.git
+
+[submodule "Detector"]
+	path = Detector
+	url = https://github.com/Secure-Your-Soul/Detector.git
+
+[submodule "Error"]
+	path = Error
+	url = https://github.com/Secure-Your-Soul/Error.git
+
+[submodule "Hub"]
+	path = Hub
+	url = https://github.com/Secure-Your-Soul/Hub.git
+
+[submodule "Main"]
+	path = Main
+	url = https://github.com/Secure-Your-Soul/Main.git
+
+[submodule "Pay"]
+	path = Pay
+	url = https://github.com/Secure-Your-Soul/Pay.git
+
+[submodule "Souls"]
+	path = Souls
+	url = https://github.com/Secure-Your-Soul/Souls.git
+
+[submodule "Store"]
+	path = Store
+	url = https://github.com/Secure-Your-Soul/Store.git
