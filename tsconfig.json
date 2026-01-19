@@ -25,7 +25,7 @@
 
     /* --- STRUKTURA PROJEKTU (TWÓJ UKŁAD) --- */
     "rootDir": "./", // Szukaj plików zaczynając od tego folderu.
-    "outDir": "./", // Folder wynikowy (blokowany dla bezpieczeństwa).
+    "outDir": "./dist", // Folder wynikowy (blokowany dla bezpieczeństwa).
     "baseUrl": "./", // Punkt bazowy dla ścieżek.
 
     /* --- BLOKADA ŚMIECI I MAP (STERYLNOŚĆ) --- */

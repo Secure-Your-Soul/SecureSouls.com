@@ -2,9 +2,9 @@
   "name": "securesouls.com",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "build": "git submodule update --init --recursive && npx tsc",
+    "build": "git submodule update --init --recursive && npx tsc && node copyFiles.js",
     "deploy": "npx wrangler deploy"
   },
   "repository": {
