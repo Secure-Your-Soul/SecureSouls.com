@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "type-check": "tsc --noEmit",
-    "build": "npm run type-check && rm -rf dist && esbuild index.ts */index.ts --bundle --minify --format=esm --outdir=dist --target=esnext --legal-comments=none --drop:console --drop:debugger --sourcemap=false",
+    "build": "npm run type-check && rm -rf dist && esbuild index.ts */index.ts --bundle --minify --format=esm --outdir=dist --target=esnext --legal-comments=none --drop:console --drop:debugger",
     "deploy": "npm run build && npx wrangler deploy"
   },
   "repository": {
