@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "build": "git submodule update --init --recursive && npx tsc && node copyFiles.js && tree dist",
+    "build": "git submodule update --init --recursive && npx tsc && node copyFiles.js",
     "deploy": "npx wrangler deploy"
   },
   "repository": {
