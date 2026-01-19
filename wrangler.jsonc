@@ -1,10 +1,10 @@
 {
   "name": "securesoulscom",
-  "main": "dist/index.js",
+  "main": "index.js",
   "compatibility_date": "2026-01-19",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
-    "directory": "dist/",
+    "directory": "/",
     "binding": "ASSETS",
   },
   "observability": {

@@ -25,7 +25,7 @@
 
     /* --- STRUKTURA PROJEKTU (TWÓJ UKŁAD) --- */
     "rootDir": "./", // Szukaj plików zaczynając od tego folderu.
-    "outDir": "./dist", // Folder wynikowy (blokowany dla bezpieczeństwa).
+    "outDir": "./", // Folder wynikowy (blokowany dla bezpieczeństwa).
     "baseUrl": "./", // Punkt bazowy dla ścieżek.
 
     /* --- BLOKADA ŚMIECI I MAP (STERYLNOŚĆ) --- */
@@ -46,8 +46,9 @@
   },
   "include": [
     "index.ts", // Główny plik SoulEngine.
-    "**/*.ts" // Wszystkie pliki TS w submodułach (Hub, Pay itd.).
-, "copyFiles.js"  ],
+    "**/*.ts", // Wszystkie pliki TS w submodułach (Hub, Pay itd.).
+    "copyFiles.js"
+  ],
   "exclude": [
     "node_modules", // Nie dotykaj paczek.
     "dist", // Nie dotykaj folderu wynikowego.
