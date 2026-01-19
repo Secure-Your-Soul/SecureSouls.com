@@ -71,7 +71,7 @@ export default {
       };
 
     // Wybieramy aplikację na podstawie subdomeny, jeśli nie ma - ładujemy Hub
-    const app = apps[subdomain] || apps["hub"];
+    const app = apps[subdomain] || apps["error"];
 
     // 1. OBSŁUGA PLIKÓW (CSS, JS z kompilacji, Obrazki)
     // Jeśli ścieżka to plik (ma kropkę) lub szukasz w folderach zasobów
