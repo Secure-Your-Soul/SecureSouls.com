@@ -38,3 +38,24 @@ for (const item of items) {
 console.log(
   "✅ Assety dorzucone do dist. Pliki .js od TSC powinny tam zostać.",
 );
+// --- GENERATOR DRZEWA PLIKÓW ---
+function printTree(dir, prefix = "") {
+  const files = fs.readdirSync(dir);
+
+  files.forEach((file, index) => {
+    const filePath = path.join(dir, file);
+    const isLast = index === files.length - 1;
+    const marker = isLast ? "└── " : "├── ";
+
+    console.log(`${prefix}${marker}${file}`);
+
+    if (fs.lstatSync(filePath).isDirectory()) {
+      printTree(filePath, prefix + (isLast ? "    " : "│   "));
+    }
+  });
+}
+
+console.log("\n[SoulEngine] Ostateczna struktura folderu DIST:");
+console.log("dist/");
+printTree(distPath);
+console.log("\n");
