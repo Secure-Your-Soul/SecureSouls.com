@@ -4,7 +4,12 @@
     "target": "ESNext", // Najnowocześniejszy JavaScript.
     "module": "ESNext", // Standard ESM (import/export).
     "moduleResolution": "Bundler", // Szukanie paczek zoptymalizowane pod esbuild.
-    "lib": ["ESNext", "WebWorker"], // Funkcje JS + API Cloudflare Workers.
+    "lib": [
+      "ESNext",
+      "WebWorker", // Dla Twojego głównego Workera
+      "DOM", // Dla Twoich submodułów w przeglądarce
+      "DOM.Iterable"
+    ], // Pozwala np. na pętle po elementach HTML (querySelectorAll)], // Funkcje JS + API Cloudflare Workers.
     "types": ["@cloudflare/workers-types"], // Typowanie dla env.ASSETS itp.
 
     /* --- RYGOR I JAKOŚĆ (POLICJA KODU) --- */

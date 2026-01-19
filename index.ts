@@ -7,121 +7,172 @@ interface Env {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
-    const host = url.host; // np. auth.securesouls.com
-    const subdomain = host.split(".")[0].toLowerCase();
+    const host = url.host;
 
-    // Szybka konfiguracja Twoich submodułów (wszystkie 11 repozytoriów)
-    const apps: Record<string, { name: string; folder: string; desc: string }> =
-      {
-        hub: {
-          name: "Souls Hub",
-          folder: "Hub",
-          desc: "Twoje centrum dowodzenia SoulEngine.",
-        },
-        auth: {
-          name: "Souls Auth",
-          folder: "Auth",
-          desc: "Bezpieczne logowanie i autoryzacja dusz.",
-        },
-        pay: {
-          name: "Souls Pay",
-          folder: "Pay",
-          desc: "Szybkie i bezpieczne płatności SoulEngine.",
-        },
-        blog: {
-          name: "Souls Blog",
-          folder: "Blog",
-          desc: "Artykuły, nowości i kroniki ze świata dusz.",
-        },
-        dashboard: {
-          name: "Souls Dashboard",
-          folder: "Dashboard",
-          desc: "Panel statystyk i zarządzania Twoim kontem.",
-        },
-        detector: {
-          name: "Souls Detector",
-          folder: "Detector",
-          desc: "System wykrywania anomalii i analizy dusz.",
-        },
-        store: {
-          name: "Souls Store",
-          folder: "Store",
-          desc: "Sklep z unikalnymi zasobami i ulepszeniami.",
-        },
-        souls: {
-          name: "Souls Collection",
-          folder: "Souls",
-          desc: "Twoja prywatna kolekcja zebranych dusz.",
-        },
-        main: {
-          name: "Souls Main",
-          folder: "Main",
-          desc: "Strona główna ekosystemu Secure-Your-Soul.",
-        },
-        error: {
-          name: "Souls Error",
-          folder: "Error",
-          desc: "Coś poszło nie tak... ale dusza jest bezpieczna.",
-        },
-        deniskontek: {
-          name: "DenisKontek",
-          folder: "DenisKontek",
-          desc: "Portfolio i projekty twórcy systemu.",
-        },
-      };
+    // Logika wykrywania: jeśli 2 człony -> main. Jeśli 3 -> subdomena.
+    const parts = host.split(".");
+    const subdomain = parts.length > 2 ? parts[0].toLowerCase() : "main";
 
-    // Wybieramy aplikację na podstawie subdomeny, jeśli nie ma - ładujemy Hub
+    const apps: Record<
+      string,
+      { name: string; folder: string; desc: string; color: string }
+    > = {
+      main: {
+        name: "Souls Main",
+        folder: "Main",
+        desc: "Strona główna ekosystemu Secure-Your-Soul.",
+        color: "#ffffff",
+      },
+      hub: {
+        name: "Souls Hub",
+        folder: "Hub",
+        desc: "Twoje centrum dowodzenia SoulEngine.",
+        color: "#00ff00",
+      },
+      auth: {
+        name: "Souls Auth",
+        folder: "Auth",
+        desc: "Bezpieczne logowanie dusz.",
+        color: "#4444ff",
+      },
+      pay: {
+        name: "Souls Pay",
+        folder: "Pay",
+        desc: "Płatności SoulEngine.",
+        color: "#ffff00",
+      },
+      blog: {
+        name: "Souls Blog",
+        folder: "Blog",
+        desc: "Kroniki ze świata dusz.",
+        color: "#ff00ff",
+      },
+      dashboard: {
+        name: "Souls Dashboard",
+        folder: "Dashboard",
+        desc: "Panel zarządzania kontem.",
+        color: "#00ffff",
+      },
+      detector: {
+        name: "Souls Detector",
+        folder: "Detector",
+        desc: "Wykrywanie anomalii dusz.",
+        color: "#ff4444",
+      },
+      store: {
+        name: "Souls Store",
+        folder: "Store",
+        desc: "Sklep z zasobami.",
+        color: "#ffa500",
+      },
+      souls: {
+        name: "Souls Collection",
+        folder: "Souls",
+        desc: "Kolekcja zebranych dusz.",
+        color: "#800080",
+      },
+      deniskontek: {
+        name: "DenisKontek",
+        folder: "DenisKontek",
+        desc: "Portfolio twórcy systemu.",
+        color: "#ffffff",
+      },
+      error: {
+        name: "Souls Error",
+        folder: "Error",
+        desc: "Błąd systemu dusz.",
+        color: "#ff0000",
+      },
+    };
+
+    // Fallback do błędu, jeśli subdomena nie istnieje w rejestrze
     const app = apps[subdomain] || apps["error"];
 
-    // 1. OBSŁUGA PLIKÓW (CSS, JS z kompilacji, Obrazki)
-    // Jeśli ścieżka to plik (ma kropkę) lub szukasz w folderach zasobów
-    if (
-      url.pathname.includes(".") ||
-      url.pathname.startsWith("/Styles") ||
-      url.pathname.startsWith("/Scripts")
-    ) {
-      // Przekierowujemy do folderu submodułu: /Styles/Style.css -> /Auth/Styles/Style.css
-      const internalPath = `/${app.folder}${url.pathname}`;
+    try {
+      let path = url.pathname;
+      if (path === "/" || path === "") path = "/index.html";
+
+      const internalPath = `/${app.folder}${path}`;
       const assetUrl = new URL(internalPath, url.origin);
 
-      // Pobieramy plik z zasobów Cloudflare
-      return env.ASSETS.fetch(new Request(assetUrl, request));
+      const response = await env.ASSETS.fetch(new Request(assetUrl, request));
+
+      // Jeśli to plik HTML, wstrzykujemy do niego unikalne SEO
+      if (
+        response.ok &&
+        response.headers.get("content-type")?.includes("text/html")
+      ) {
+        const originalHtml = await response.text();
+        return this.injectMetadata(originalHtml, app, host, url.pathname);
+      }
+
+      // Jeśli plik nie istnieje w dist, rzucamy błąd do catch
+      if (!response.ok) throw new Error(`Resource not found: ${path}`);
+
+      return response;
+    } catch (e: any) {
+      return this.renderError(e.message, app);
     }
+  },
 
-    // 2. SOULENGINE - GENEROWANIE DYNAMICZNEGO HTML (SEO & LANG)
-    const lang = request.headers.get("accept-language")?.split(",")[0] || "pl";
+  // INTELIGENTNY INJECTOR: Edytuje Head każdego index.html w locie
+  injectMetadata(html: string, app: any, host: string, path: string): Response {
+    const lang = "pl";
+    const canonical = `https://${host}${path}`;
+    const ogImage = `https://${host}/Images/Banner.jpg`;
 
-    const head = `
+    const headContent = `
       <title>${app.name}</title>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="description" content="${app.desc}">
-      <meta name="generator" content="SoulEngine">
+      <meta name="theme-color" content="${app.color}">
+      <link rel="canonical" href="${canonical}">
       
+      <meta property="og:type" content="website">
       <meta property="og:title" content="${app.name}">
-      <meta property="og:url" content="https://${host}${url.pathname}">
-      <meta property="og:image" content="https://${host}/Images/Banner.jpg">
+      <meta property="og:description" content="${app.desc}">
+      <meta property="og:url" content="${canonical}">
+      <meta property="og:image" content="${ogImage}">
+      <meta name="twitter:card" content="summary_large_image">
 
       <link rel="stylesheet" href="/Styles/Style.css">
-      <link rel="stylesheet" href="/Styles/loader.css">
-      <script src="/index.js" defer></script> 
+      <script src="/index.js" defer></script>
     `;
 
-    const html = `<!DOCTYPE html>
-<html lang="${lang}">
-<head>${head}</head>
-<body>
-    <header><h1>${app.name}</h1></header>
-    <main>
-        <div id="app-root">Ładowanie ${app.name}...</div>
-    </main>
-</body>
-</html>`;
+    // Wstawiamy Head przed zamknięciem </head> w oryginalnym pliku
+    const finalHtml = html
+      .replace("</head>", `${headContent}</head>`)
+      .replace("<html", `<html lang="${lang}"`);
 
-    return new Response(html, {
-      headers: {
-        "Content-Type": "text/html;charset=UTF-8",
-      },
+    return new Response(finalHtml, {
+      headers: { "Content-Type": "text/html;charset=UTF-8" },
+    });
+  },
+
+  // PROFESJONALNY FALLBACK BŁĘDU
+  renderError(msg: string, app: any): Response {
+    const errorHtml = `<!DOCTYPE html>
+    <html lang="pl">
+    <head>
+      <title>System Error | SoulEngine</title>
+      <style>
+        body { background: #0a0a0a; color: #ff4444; font-family: monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { border: 1px solid #ff4444; padding: 20px; max-width: 80%; box-shadow: 0 0 20px rgba(255,0,0,0.2); }
+        h1 { margin-top: 0; border-bottom: 1px solid #ff4444; padding-bottom: 10px; }
+      </style>
+    </head>
+    <body>
+      <div class="box">
+        <h1>SOUL_ENGINE_CRITICAL_ERROR</h1>
+        <p>Aplikacja: ${app.name}</p>
+        <p>Status: PRZERWANY</p>
+        <p>Log: ${msg}</p>
+        <button onclick="location.href='https://securesouls.com'">POWRÓT DO MAIN</button>
+      </div>
+    </body>
+    </html>`;
+    return new Response(errorHtml, {
+      status: 404,
+      headers: { "Content-Type": "text/html;charset=UTF-8" },
     });
   },
 };
