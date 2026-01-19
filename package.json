@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "build": "git config --global url.\"https://${GH_TOKEN}@github.com/\".insteadOf \"https://github.com/\" && git submodule update --init --recursive && tsc && rm -rf dist && mkdir -p dist && cp -r . dist/ || true && rm -rf dist/node_modules dist/dist dist/.git && find dist -name '*.ts' -delete",
+    "build": "git submodule update --init --recursive && npx tsc && node copyFiles.js",
     "deploy": "npx wrangler deploy"
   },
   "repository": {

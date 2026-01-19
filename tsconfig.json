@@ -29,7 +29,7 @@
     "baseUrl": "./", // Punkt bazowy dla ścieżek.
 
     /* --- BLOKADA ŚMIECI I MAP (STERYLNOŚĆ) --- */
-    "noEmit": true, // TS ma TYLKO sprawdzać błędy, zero plików na dysku.
+    "noEmit": false, // TS ma TYLKO sprawdzać błędy, zero plików na dysku.
     "sourceMap": false, // ZAKAZ tworzenia plików .map.
     "inlineSourceMap": false, // ZAKAZ wklejania map do kodu.
     "declaration": false, // ZAKAZ tworzenia plików .d.ts (definicji).
@@ -38,7 +38,7 @@
     "emitDeclarationOnly": false, // Upewnia się, że nic nie zostanie wypuszczone.
 
     /* --- CZYSTOŚĆ I SZYBKOŚĆ --- */
-    "allowJs": false, // Całkowity zakaz plików .js w źródłach.
+    "allowJs": true, // Całkowity zakaz plików .js w źródłach.
     "checkJs": false, // Nie sprawdzaj plików JS (bo ich nie ma).
     "isolatedModules": true, // Gwarantuje bezpieczeństwo kompilacji plik po pliku.
     "skipLibCheck": true, // Ignoruj błędy w node_modules (oszczędza czas).
@@ -47,7 +47,7 @@
   "include": [
     "index.ts", // Główny plik SoulEngine.
     "**/*.ts" // Wszystkie pliki TS w submodułach (Hub, Pay itd.).
-  ],
+, "copyFiles.js"  ],
   "exclude": [
     "node_modules", // Nie dotykaj paczek.
     "dist", // Nie dotykaj folderu wynikowego.
