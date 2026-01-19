@@ -91,56 +91,8 @@ export default {
     try {
       let path = url.pathname;
       if (path === "/" || path === "") path = "/index.html";
-      if (url.pathname === "/__scan") {
-        const modules = [
-          "Main",
-          "Hub",
-          "Auth",
-          "Pay",
-          "Blog",
-          "Dashboard",
-          "Detector",
-          "Store",
-          "Souls",
-          "DenisKontek",
-          "Error",
-        ];
-        const files = [
-          "index.html",
-          "index.js",
-          "Styles/Style.css",
-          "Scripts/index.js",
-        ];
-        const results: any = { root: {}, modules: {} };
-
-        // 1. Sprawdź pliki w Root
-        for (const f of ["index.html", "index.js", "wrangler.jsonc"]) {
-          const res = await env.ASSETS.fetch(
-            new Request(new URL("/" + f, url.origin)),
-          );
-          results.root["/" + f] =
-            res.status === 200 ? "✅ OK" : `❌ ${res.status}`;
-        }
-
-        // 2. Sprawdź pliki w Modułach
-        for (const mod of modules) {
-          results.modules[mod] = {};
-          for (const f of files) {
-            const path = `/${mod}/${f}`;
-            const res = await env.ASSETS.fetch(
-              new Request(new URL(path, url.origin)),
-            );
-            if (res.status === 200) {
-              results.modules[mod][f] = "✅ OK";
-            }
-          }
-        }
-
-        return new Response(JSON.stringify(results, null, 2), {
-          headers: { "Content-Type": "application/json;charset=UTF-8" },
-        });
-      }
-      const internalPath = `/${app.folder}${path}`;
+      const cleanPath = path.startsWith("/") ? path : `/${path}`;
+      const internalPath = `/${app.folder}${cleanPath}`.replace(/\/+/g, "/");
       const assetUrl = new URL(internalPath, url.origin);
 
       const response = await env.ASSETS.fetch(new Request(assetUrl, request));
