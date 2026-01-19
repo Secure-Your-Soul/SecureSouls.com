@@ -1,0 +1,13 @@
+{
+  "name": "soul-gateway",
+  "main": "dist/index.js",
+  "compatibility_date": "2026-01-19",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "dist/",
+    "binding": "ASSETS",
+  },
+  "observability": {
+    "enabled": true,
+  },
+}
