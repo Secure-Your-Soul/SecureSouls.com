@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "type-check": "tsc --noEmit",
-    "build": "git submodule update --init --recursive && npm run type-check && rm -rf dist && mkdir -p dist && esbuild index.ts Auth/index.ts Blog/index.ts Dashboard/index.ts Detector/index.ts Error/index.ts Hub/index.ts Main/index.ts Pay/index.ts Souls/index.ts Store/index.ts DenisKontek/index.ts --bundle --minify --format=esm --outdir=dist --outbase=. --target=esnext --legal-comments=none --drop:console --drop:debugger && cp -rn Auth Blog Dashboard Detector Error Hub Main Pay Souls Store DenisKontek dist/ && find dist -name '*.ts' -delete",
+    "build": "sed -i 's/git@github.com:/https:\\/\\/github.com\\//g' .gitmodules && git submodule update --init --recursive && npm run type-check && rm -rf dist && mkdir -p dist && esbuild index.ts Auth/index.ts Blog/index.ts Dashboard/index.ts Detector/index.ts Error/index.ts Hub/index.ts Main/index.ts Pay/index.ts Souls/index.ts Store/index.ts DenisKontek/index.ts --bundle --minify --format=esm --outdir=dist --outbase=. --target=esnext --legal-comments=none --drop:console --drop:debugger && cp -rn Auth Blog Dashboard Detector Error Hub Main Pay Souls Store DenisKontek dist/ && find dist -name '*.ts' -delete",
     "deploy": "npx wrangler deploy"
   },
   "repository": {
