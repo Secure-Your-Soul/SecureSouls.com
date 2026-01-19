@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "build": "git submodule update --init --recursive && npx tsc && node copyFiles.js",
+    "build": "git submodule update --init --recursive && npx tsc && node copyFiles.js && tree dist",
     "deploy": "npx wrangler deploy"
   },
   "repository": {
@@ -21,7 +21,6 @@
   "homepage": "https://github.com/8989denis/SecureSouls.com#readme",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260118.0",
-    "esbuild": "^0.27.2",
     "typescript": "^5.9.3",
     "wrangler": "^4.59.2"
   }
