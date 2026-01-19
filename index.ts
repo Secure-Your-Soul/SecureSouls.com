@@ -93,7 +93,7 @@ export default {
       if (path === "/" || path === "") path = "/index.html";
       const cleanPath = path.startsWith("/") ? path : `/${path}`;
       const internalPath = `/${app.folder}${cleanPath}`.replace(/\/+/g, "/");
-      const assetUrl = new URL(internalPath, url.origin);
+      const assetUrl = new URL(internalPath, "http://127.0.0.1");
 
       const response = await env.ASSETS.fetch(new Request(assetUrl, request));
 
