@@ -5,8 +5,8 @@
   "main": "index.ts",
   "scripts": {
     "type-check": "tsc --noEmit",
-    "build": "npm run type-check && mkdir -p dist && esbuild index.ts */index.ts --bundle --minify --format=esm --outdir=dist --outbase=. --target=esnext --legal-comments=none --drop:console --drop:debugger && rsync -av --progress ./ ./dist/ --exclude='*.ts' --exclude='.git*' --exclude='node_modules' --exclude='dist' --exclude='package*' --exclude='tsconfig.json' --exclude='wrangler.jsonc'",
-    "deploy": "npm run build && npx wrangler deploy"
+    "build": "git submodule update --init --recursive && npm run type-check && rm -rf dist && mkdir -p dist && esbuild index.ts Auth/index.ts Blog/index.ts Dashboard/index.ts Detector/index.ts Error/index.ts Hub/index.ts Main/index.ts Pay/index.ts Souls/index.ts Store/index.ts DenisKontek/index.ts --bundle --minify --format=esm --outdir=dist --outbase=. --target=esnext --legal-comments=none --drop:console --drop:debugger && cp -rn Auth Blog Dashboard Detector Error Hub Main Pay Souls Store DenisKontek dist/ && find dist -name '*.ts' -delete",
+    "deploy": "npx wrangler deploy"
   },
   "repository": {
     "type": "git",
