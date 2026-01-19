@@ -107,7 +107,7 @@ export default {
       }
 
       // Jeśli plik nie istnieje w dist, rzucamy błąd do catch
-      if (!response.ok) throw new Error(`Resource not found: ${path}`);
+      if (!response.ok) throw new Error(`Resource not found: ${internalPath}`);
 
       return response;
     } catch (e: any) {
