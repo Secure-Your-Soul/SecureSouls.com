@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "type-check": "tsc --noEmit",
-    "build": "git config --global url.\"https://${GH_TOKEN}@github.com/\".insteadOf \"https://github.com/\" && git config --global url.\"https://${GH_TOKEN}@github.com/\".insteadOf \"git@github.com:\" && git submodule update --init --recursive && echo '--- STRUKTURA FOLDERÓW PRZED BUILDEM ---' && find . -maxdepth 2 -not -path '*/.*' && npm run type-check && rm -rf dist && mkdir -p dist && esbuild index.ts */index.ts --bundle --minify --format=esm --outdir=dist --outbase=. --target=esnext --legal-comments=none --drop:console --drop:debugger && find . -maxdepth 2 -not -path '*/.*' -not -path './dist*' -not -path './node_modules*' -type d -exec cp -r {} dist/ \\; && find dist -name '*.ts' -delete",
+    "build": "git config --global url.\"https://${GH_TOKEN}@github.com/\".insteadOf \"https://github.com/\" && git submodule update --init --recursive && tsc && cp -r [!dist|node_modules]* dist/ && find dist -name '*.ts' -delete",
     "deploy": "npx wrangler deploy"
   },
   "repository": {
