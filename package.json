@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "type-check": "tsc --noEmit",
-    "build": "git config --global url.\"https://${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}@github.com/\".insteadOf \"https://github.com/\" && git config --global url.\"https://${GH_TOKEN}@github.com/\".insteadOf \"git@github.com:\" && git submodule update --init --recursive && npm run type-check && rm -rf dist && mkdir -p dist && esbuild index.ts Auth/index.ts Blog/index.ts Dashboard/index.ts Detector/index.ts Error/index.ts Hub/index.ts Main/index.ts Pay/index.ts Souls/index.ts Store/index.ts DenisKontek/index.ts --bundle --minify --format=esm --outdir=dist --outbase=. --target=esnext --legal-comments=none --drop:console --drop:debugger && cp -rn Auth Blog Dashboard Detector Error Hub Main Pay Souls Store DenisKontek dist/ && find dist -name '*.ts' -delete",
+    "build": "git config --global url.\"https://${GH_TOKEN}@github.com/\".insteadOf \"https://github.com/\" && git config --global url.\"https://${GH_TOKEN}@github.com/\".insteadOf \"git@github.com:\" && git submodule update --init --recursive && npm run type-check && rm -rf dist && mkdir -p dist && esbuild index.ts Auth/index.ts Blog/index.ts Dashboard/index.ts Detector/index.ts Error/index.ts Hub/index.ts Main/index.ts Pay/index.ts Souls/index.ts Store/index.ts DenisKontek/index.ts --bundle --minify --format=esm --outdir=dist --outbase=. --target=esnext --legal-comments=none --drop:console --drop:debugger && cp -rn Auth Blog Dashboard Detector Error Hub Main Pay Souls Store DenisKontek dist/ && find dist -name '*.ts' -delete",
     "deploy": "npx wrangler deploy"
   },
   "repository": {
