@@ -93,9 +93,10 @@ export default {
       if (path === "/" || path === "") path = "/index.html";
       const cleanPath = path.startsWith("/") ? path : `/${path}`;
       const internalPath = `/${app.folder}${cleanPath}`.replace(/\/+/g, "/");
-      const assetUrl = new URL(internalPath, "http://127.0.0.1");
 
-      const response = await env.ASSETS.fetch(new Request(assetUrl, request));
+      const response = await env.ASSETS.fetch(
+        new Request("http://internal" + internalPath),
+      );
 
       // Jeśli to plik HTML, wstrzykujemy do niego unikalne SEO
       if (
