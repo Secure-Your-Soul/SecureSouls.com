@@ -12,107 +12,87 @@ const CONFIG: {
 } = {
   Company: {
     name: "Souls", // Nazwa marki do wyświetlania w UI i Meta tagach
-    legalName: "Denis Kontek - Souls", // Nazwa do stopki i dokumentów
-    domain: ""
+    legalName: "Denis Kontek | Souls", // Nazwa do stopki i dokumentów
+    domain: "" // Automatycznie wykrywana z hosta (np. secure.securesouls.com -> securesouls.com)
   }
 };
-const translations: { [key: string]: string } = {
-  description: "Explore the Secure-Your-Soul ecosystem with Souls Main, Hub, Auth, Pay, Blog, Dashboard, Detector, Store, and Souls Collection.",
-  keywords: "Souls, Secure-Your-Soul, SoulEngine, Souls Main, Souls Hub, Souls Auth, Souls Pay, Souls Blog, Souls Dashboard, Souls Detector, Souls Store, Souls Collection"
-};
-const mainPageTitles: Record<string, string> = {
-  pl: "Strona Główna",
-  en: "Main Page",
-  de: "Startseite"
-};
+const startYear = 2023; // Rok założenia Twojego projektu/firmy
+const currentYear = new Date().getFullYear();
+async function renderError(env: any, lang: string, errorKey: string, status: number, cachedTranslations?: any): Promise<Response> {
+  // 1. Pobieramy tylko HTML (bo JSON-a już mamy lub zaraz dostaniemy)
+  const res = await env.ASSETS.fetch(new Request("http://internal/Error/index.html"));
+  
+  let html = res.ok ? await res.text() : "Critical Error";
+  
+  // 2. Jeśli nie przekazaliśmy tłumaczeń w argumencie, spróbujmy je pobrać awaryjnie
+  let translations = cachedTranslations;
+  if (!translations) {
+    const locRes = await env.ASSETS.fetch(new Request(`http://internal/Assets/Locales/${lang}.json`));
+    translations = locRes.ok ? await locRes.json() : {};
+  }
+
+  if (res.ok) {
+    // 2. Pobieramy konkretne teksty z JSON-a
+    const errorTitle = translations.error?.title || "Error";
+    const errorMessage = translations.error?.[errorKey] || "An unexpected error occurred.";
+    const errorPage = translations.error?.errorPage || "Error Page";
+
+    // 3. Wstrzykujemy gotowe teksty prosto w HTML (zastępujemy tagi)
+    html = html
+      .replace("<head>", `<title>${errorPage}</title>`)
+      .replace(/<h1 data-i18n="error.errorPage"><\/h1>/, `<h1>${errorPage}</h1>`)
+      .replace(/<h2 data-i18n="error.title"><\/h2>/, `<h2>${errorTitle}</h2>`)
+      .replace(/<p data-i18n="error.description"><\/p>/, `<p>${errorMessage}</p>`)
+      .replace("</footer>", `&copy; ${currentYear > startYear ? `${startYear}–${currentYear}` : `${startYear}`} ${CONFIG.Company.legalName}. ${translations.common.allRightsReserved}` + "</footer>")
+      // Sprzątanie
+      .replace(/<!--[\s\S]*?-->/g, "").replace(/>\s+</g, "><").trim();
+  }
+
+  return new Response(html, {
+    status: status,
+    headers: { "Content-Type": "text/html; charset=UTF-8", "Content-Language": lang }
+  });
+}
+// 1. Pobieramy listę wspieranych języków prosto z pliku langs
+const supportedLangs: string[] = ["pl", "en", "de"];
+// To siedzi w pamięci RAM instancji Workera
+const translationCache = new Map<string, any>();
+let isPreloaded = false; // Flaga, żeby nie odpalać pętli przy każdym wejściu
+async function preloadTranslations(env: Env) {
+  if (isPreloaded) return;
+
+  // Pobieramy wszystko naraz równolegle (Promise.all jest szybszy niż pętla for z await)
+  await Promise.all(supportedLangs.map(async (lang) => {
+    try {
+      const res = await env.ASSETS.fetch(new Request(`http://internal/Assets/Locales/${lang}.json`));
+      if (res.ok) {
+        translationCache.set(lang, await res.json());
+      }
+    } catch (e) {
+      console.error(`Błąd preloadu: ${lang}`);
+    }
+  }));
+
+  isPreloaded = true;
+  console.log("Preload ukończony. Załadowane języki:", Array.from(translationCache.keys()).join(", "));
+}
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
+    if (!isPreloaded) await preloadTranslations(env);
     const url = new URL(request.url);
     const host = url.hostname;
-
+    
     // Logika wykrywania: jeśli 2 człony -> main. Jeśli 3 -> subdomena.
     const parts = host.split(".");
     CONFIG.Company.domain = parts.length >= 2 ? parts.slice(-2).join(".") : host;
-    const subdomain = parts.length > 2 ? parts[0].toLowerCase() : "main";
-    const supportedLangs = ["pl", "en", "de"];
+    const subdomain = parts.length > 2 ? parts[0].toLowerCase() : "Main";
+    // 2. Wykrywanie języka użytkownika
     const requestedLang = [url.pathname.split("/")[1]?.toLowerCase(), request.headers.get("Accept-Language")?.split(",")[0].split("-")[0].toLowerCase()].find(lang => supportedLangs.includes(lang || "")) || "en";
-    const GlobalTranslations: { [key: string]: string } = {
-      mainPage: mainPageTitles[requestedLang] || mainPageTitles.en,
-    };
-    const apps: Record<
-      string,
-      { name: string; folder: string; desc: string; color: string }
-    > = {
-      main: {
-        name: "Souls Main",
-        folder: "Main",
-        desc: "Strona główna ekosystemu Secure-Your-Soul.",
-        color: "#ffffff",
-      },
-      hub: {
-        name: "Souls Hub",
-        folder: "Hub",
-        desc: "Twoje centrum dowodzenia SoulEngine.",
-        color: "#00ff00",
-      },
-      auth: {
-        name: "Souls Auth",
-        folder: "Auth",
-        desc: "Bezpieczne logowanie dusz.",
-        color: "#4444ff",
-      },
-      pay: {
-        name: "Souls Pay",
-        folder: "Pay",
-        desc: "Płatności SoulEngine.",
-        color: "#ffff00",
-      },
-      blog: {
-        name: "Souls Blog",
-        folder: "Blog",
-        desc: "Kroniki ze świata dusz.",
-        color: "#ff00ff",
-      },
-      dashboard: {
-        name: "Souls Dashboard",
-        folder: "Dashboard",
-        desc: "Panel zarządzania kontem.",
-        color: "#00ffff",
-      },
-      detector: {
-        name: "Souls Detector",
-        folder: "Detector",
-        desc: "Wykrywanie anomalii dusz.",
-        color: "#ff4444",
-      },
-      store: {
-        name: "Souls Store",
-        folder: "Store",
-        desc: "Sklep z zasobami.",
-        color: "#ffa500",
-      },
-      souls: {
-        name: "Souls Collection",
-        folder: "Souls",
-        desc: "Kolekcja zebranych dusz.",
-        color: "#800080",
-      },
-      deniskontek: {
-        name: "DenisKontek",
-        folder: "DenisKontek",
-        desc: "Portfolio twórcy systemu.",
-        color: "#ffffff",
-      },
-      error: {
-        name: "Souls Error",
-        folder: "Error",
-        desc: "Błąd systemu dusz.",
-        color: "#ff0000",
-      },
-    };
+    // 3. Wczytujemy plik tłumaczeń.
+    const translations = translationCache.get(requestedLang) || translationCache.get("en");
 
     // Fallback do błędu, jeśli subdomena nie istnieje w rejestrze
-    const app = apps[subdomain] || apps["error"];
+    const app = translations[subdomain.toLowerCase()] || translations["error"];
     const method = request.method;
     const pathname = url.pathname;
     try {
@@ -122,14 +102,14 @@ export default {
             // 1. GŁÓWNA STRONA
             if (pathname === "/" || pathname === "" || ["/", "", ...supportedLangs.map(l => `/${l}`), ...supportedLangs.map(l => `/${l}/`)].includes(pathname)) {
               const response = await env.ASSETS.fetch(
-                new Request("http://internal" + `/${app.folder}/index.html`),
+                new Request("http://internal" + `/${subdomain}/index.html`),
               );
     
               if (!response.ok) throw new Error(`Resource not found: ${pathname}`);
     
               let html = await response.text();
               let head = `
-                <title>${app.name}</title>
+                <title>${app.title}</title>
                 <meta charset="UTF-8">
                 <meta http-equiv="X-UA-Compatible" content="IE=edge">
                 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -140,14 +120,14 @@ export default {
                  <!-- SEO -->
                 <meta name="author" content="${CONFIG.Company.name}">
                 <meta name="publisher" content="${CONFIG.Company.name}">
-                <meta name="keywords" content="${app.name + ", " + translations.keywords}">
-                <meta name="description" content="${app.desc}">
+                <meta name="keywords" content="${app.title + ", " + translations.keywords}">
+                <meta name="description" content="${app.description}">
                 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
                 <meta name="googlebot" content="index, follow">
                 <meta name="bingbot" content="index, follow">
                 <meta name="x-robots-tag" content="index, follow">
                 <meta name="generator" content="SoulEngine">
-                <meta name="application-name" content="${app.name}">
+                <meta name="application-name" content="${app.title}">
                 <meta name="format-detection" content="telephone=no">
                 <meta name="referrer" content="strict-origin-when-cross-origin">
                 <!-- WYSZUKIWARKI MOBILNE -->
@@ -157,46 +137,44 @@ export default {
                 <meta name="mobile-web-app-capable" content="yes">
                 <meta name="apple-mobile-web-app-capable" content="yes">
                 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-                <!-- Site Verification -->
-                <meta name="google-site-verification" content="93hkX3107xERxS7yS22_wTdYqGKXplswSnulvj47YVY">
-                <meta name="msvalidate.01" content="57CAE5C2C0A38851C2F57008BDA9DD55" />
                 <!-- OpenGraph (SOCIAL / DISCORD / FACEBOOK / LINKEDIN) -->
                 <meta property="og:type" content="website">
-                <meta property="og:title" content="${app.name}">
-                <meta property="og:description" content="${app.desc}">
+                <meta property="og:title" content="${app.title}">
+                <meta property="og:description" content="${app.description}">
                 <meta property="og:url" content="https://${host}${pathname}">
-                <meta property="og:site_name" content="${app.name}">
-                <meta property="og:image" content="https://${host}/Images/Banner.avif">
+                <meta property="og:site_name" content="${app.title}">
+                <meta property="og:image" content="https://${host}/Assets/Images/Banner.avif">
                 <meta property="og:image:type" content="image/avif">
-                <meta property="og:image" content="https://${host}/Images/Banner.jpg">
+                <meta property="og:image" content="https://${host}/Assets/Images/Banner.jpg">
                 <meta property="og:image:type" content="image/jpeg">
-                <meta property="og:image:alt" content="${app.name} — Banner">
+                <meta property="og:image:alt" content="${app.title} — Banner">
                 <meta property="og:locale" content="${requestedLang}_${
                 requestedLang === "en" ? "US" : requestedLang.toUpperCase()}">
                 <meta property="og:updated_time" content="2025-11-13">
                 <!-- Twitter Card (też pod Discord / Slack działa ładnie) -->
                 <meta name="twitter:card" content="summary_large_image">
-                <meta name="twitter:site" content="@TwojeKonto">
-                <meta name="twitter:creator" content="@TwojeKonto">
-                <meta name="twitter:title" content="${app.name}">
-                <meta name="twitter:description" content="${app.desc}">
-                <meta name="twitter:image" content="https://${host}/Images/Banner.jpg">
+                <meta name="twitter:site" content="@">
+                <meta name="twitter:creator" content="@">
+                <meta name="twitter:title" content="${app.title}">
+                <meta name="twitter:description" content="${app.description}">
+                <meta name="twitter:image" content="https://${host}/Assets/Images/Banner.jpg">
                 <!-- Linkowanie -->
                 <link rel="canonical" href="https://${host}${pathname}">
                 <link rel="preload" href="/Styles/Style.css" as="style">
                 <link rel="preload" href="/Styles/loader.css" as="style">
-                <link rel="preload" href="/Scripts/index.js" as="script" crossorigin="anonymous">
-                <link rel="preload" href="/Scripts/loader.js" as="script" crossorigin="anonymous">
+                <link rel="preload" href="/Scripts/index.js" as="script">
+                <link rel="preload" href="/Scripts/loader.js" as="script">
                 <noscript><link rel="stylesheet" href="/Styles/Style.css"></noscript>
-                <link rel="stylesheet" href="/Styles/loader.css"/>
+                <link rel="stylesheet" href="/Styles/Style.css">
+                <link rel="stylesheet" href="/Styles/loader.css">
                 <!-- Favicons + PWA icons (AVIF primary + PNG fallback) -->
-                <link rel="icon" href="/favicon.ico" type="image/x-icon">
-                <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-                <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-                <link rel="shortcut icon" href="/favicon.ico" />
-                <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-                <meta name="apple-mobile-web-app-title" content="Souls" />
-                <link rel="manifest" href="/site.webmanifest" />
+                <link rel="icon" href="/Assets/Images/favicon.ico" type="image/x-icon">
+                <link rel="icon" type="image/png" href="/Assets/Images/favicon-96x96.png" sizes="96x96">
+                <link rel="icon" type="image/svg+xml" href="/Assets/Images/favicon.svg">
+                <link rel="shortcut icon" href="/Assets/Images/favicon.ico" />
+                <link rel="apple-touch-icon" sizes="180x180" href="/Assets/Images/apple-touch-icon.png">
+                <meta name="apple-mobile-web-app-title" content="Souls">
+                <link rel="manifest" href="/site.webmanifest">
                 ${
                   host === `hub.${CONFIG.Company.domain}`
                     ? '<link rel="manifest" href="/manifest.json">'
@@ -246,7 +224,7 @@ export default {
                 {
                   "@context": "https://schema.org",
                   "@type": "WebPage",
-                  "name": "${app.name}",
+                  "name": "${app.title}",
                   "url": "https://${CONFIG.Company.domain}"
                 }
                 </script>
@@ -259,7 +237,7 @@ export default {
                     {
                       "@type": "ListItem",
                       "position": 1,
-                      "name": "${GlobalTranslations.mainPage}",
+                      "name": "${translations.mainPage}",
                       "item": "https://${CONFIG.Company.domain}"
                     },
                     {
@@ -315,26 +293,22 @@ export default {
                       "availability": "https://schema.org/InStock"
                     }
                 }
-                </script>`;
+                </script>
+                <script src="/Scripts/index.js" defer></script>`;
               html = html.replace("<html>", `<html lang="${requestedLang}">`)
               html = html.replace("</head>", head + "</head>");
-              const startYear = 2023; // Rok założenia Twojego projektu/firmy
-              const currentYear = new Date().getFullYear();
-              const allRightsReserved: Record<string, string> = {
-                pl: "Wszelkie prawa zastrzeżone.",
-                en: "All rights reserved.",
-                de: "Alle Rechte vorbehalten."
-              };
-              html = html.replace("</footer>", `&copy; ${currentYear > startYear ? `${startYear}–${currentYear}` : `${startYear}`} ${CONFIG.Company.legalName}. ${allRightsReserved[requestedLang] || allRightsReserved["en"]}` + "</footer>");
+              html = html.replace("</footer>", `&copy; ${currentYear > startYear ? `${startYear}–${currentYear}` : `${startYear}`} ${CONFIG.Company.legalName}. ${translations.common.allRightsReserved}` + "</footer>");
               return new Response(html.replace(/<!--[\s\S]*?-->/g, "").replace(/>\s+</g, "><").trim(), {
-                headers: { "Content-Type": "text/html; charset=UTF-8" },
+                headers: { "Content-Type": "text/html; charset=UTF-8", "Content-Language": requestedLang,
+                  // To mówi przeglądarce: "Zacznij ssać JSONa zanim w ogóle przeczytasz JS!"
+                  "Link": `</Assets/Locales/${requestedLang}.json>; rel=preload; as=fetch; crossorigin`},
               });
             }
     
             // 2. PLIKI STATYCZNE (Dozwolone tylko te, które wskażesz)
-            const allowedExtensions = [".js", ".css", ".png", ".jpg", ".jpeg", ".svg", ".avif", ".ico", ".webmanifest", ".xml"];
+            const allowedExtensions = [".js", ".css", ".png", ".jpg", ".jpeg", ".svg", ".avif", ".ico", ".webmanifest", ".xml", ".json"];
             if (allowedExtensions.some((ext) => pathname.endsWith(ext))) {
-              const assetPath = `/${app.folder}${pathname}`.replace(/\/+/g, "/");
+              const assetPath = `/${subdomain}${pathname}`.replace(/\/+/g, "/");
               return await env.ASSETS.fetch(
                 new Request("http://internal" + assetPath),
               );
@@ -342,7 +316,9 @@ export default {
             break;
           case "POST":
           default:
+            return await renderError(env, requestedLang, "unauthorized", 405);
             return new Response("Method Not Allowed", { status: 405 });
+            break;
         }
       } else {
         switch(method) {
@@ -351,23 +327,20 @@ export default {
           case "POST":
             break;
           default:
+            return await renderError(env, requestedLang, "unauthorized", 405);
             return new Response("Method Not Allowed", { status: 405 });
+            break;
         }
       }
 
       // 3. BLOKADA DLA WSZYSTKIEGO INNEGO
-      return new Response("Unauthorized or Not Found", { status: 404 });
-    } catch (e: any) {
-      // 4. OBSŁUGA BŁĘDÓW (Zwraca HTML zamiast białej strony)
-      const response = await env.ASSETS.fetch(
-        new Request("http://internal" + `/${apps["error"].folder}/index.html`),
-      );
+      return await renderError(env, requestedLang, "notFound", 404);
 
-      if (!response.ok) throw new Error(`Resource not found: ${pathname}`);
-    
-      let html = await response.text();
-      return new Response(html.replace(/<!--[\s\S]*?-->/g, "").replace(/>\s+</g, "><").trim(), {
-        headers: { "Content-Type": "text/html; charset=UTF-8" },});
-    }
+} catch (e: any) {
+  // --- BLOK 4: BŁĘDY KODU / SERWERA ---
+  console.error(e); // Warto widzieć co walnęło w logach
+  const errorTrans = translationCache.get(requestedLang) || translationCache.get("en");
+  return await renderError(env, requestedLang, "serverError", 500, errorTrans);
+}
   },
 };

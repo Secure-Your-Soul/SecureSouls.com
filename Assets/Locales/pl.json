@@ -1,0 +1,59 @@
+{
+    "auth": {
+        "title": "Logowanie",
+        "description": "Zaloguj się, aby uzyskać dostęp do swojego konta i zarządzać swoimi usługami."
+    },
+    "blog": {
+        "title": "Blog",
+        "description": "Czytaj nasze najnowsze artykuły i porady dotyczące bezpieczeństwa w życiu."
+    },
+    "detector": {
+        "title": "Detektor",
+        "description": "Sprawdź oszustów i zabezpiecz swoją cyfrową duszę przed zagrożeniami."
+    },
+    "deniskontek": {
+        "title": "Denis Kontek",
+        "description": "Poznaj naszego założyciela i eksperta ds. bezpieczeństwa cyfrowego."
+    },
+    "error": {
+        "title": "Wstąpił Błąd",
+        "description": "Coś poszło nie tak. Prosimy spróbować ponownie później.",
+        "errorPage": "Strona Błędu",
+        "unauthorized": "Nieautoryzowany dostęp.",
+        "serverError": "Wystąpił błąd serwera. Prosimy spróbować ponownie później.",
+        "notFound": "Nie znaleziono strony. Prosimy sprawdzić adres URL i spróbować ponownie."
+    },
+    "main": {
+        "title": "Strona główna",
+        "description": "Odkryj nasze usługi i zabezpiecz swoją cyfrową duszę już dziś!"
+    },
+    "hub": {
+        "title": "Hub",
+        "description": "Zarządzaj swoimi usługami i ustawieniami w naszym bezpiecznym hubie."
+    },
+    "souls": {
+        "title": "Dusze",
+        "description": "Dołącz do społeczności dusz i dziel się swoimi doświadczeniami z innymi."
+    },
+    "store": {
+        "title": "Sklep",
+        "description": "Kup nasze usługi i produkty, aby zabezpieczyć swoją cyfrową duszę."
+    },
+    "pay": {
+        "title": "Płatności",
+        "description": "Zarządzaj swoimi płatnościami i subskrypcjami w bezpieczny sposób."
+    },
+    "common": {
+        "mainPage": "Strona główna",
+        "socials": "Społeczność",
+        "love": "Miłość",
+        "home": "Dom",
+        "video": "Wideo",
+        "settings": "Ustawienia",
+        "news": "Aktualności",
+        "about": "O nas",
+        "contact": "Kontakt",
+        "allRightsReserved": "Wszelkie prawa zastrzeżone.",
+        "openSiteSoon": "Strona wkrótce dostępna"
+    }
+}

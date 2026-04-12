@@ -1,0 +1,59 @@
+{
+    "auth": {
+        "title": "Anmelden",
+        "description": "Melden Sie sich an, um auf Ihr Konto zuzugreifen und Ihre Dienste zu verwalten."
+    },
+    "blog": {
+        "title": "Blog",
+        "description": "Lesen Sie unsere neuesten Artikel und Sicherheitstipps für das tägliche Leben."
+    },
+    "detector": {
+        "title": "Detektor",
+        "description": "Überprüfen Sie Betrüger und schützen Sie Ihre digitale Seele vor Bedrohungen."
+    },
+    "deniskontek": {
+        "title": "Denis Kontek",
+        "description": "Lernen Sie unseren Gründer und Experten für digitale Sicherheit kennen."
+    },
+    "error": {
+        "title": "Ein Fehler ist aufgetreten",
+        "description": "Etwas ist schief gelaufen. Bitte versuchen Sie es später noch einmal.",
+        "errorPage": "Fehlerseite",
+        "unauthorized": "Unbefugter Zugriff.",
+        "serverError": "Serverfehler aufgetreten. Bitte versuchen Sie es später noch einmal.",
+        "notFound": "Seite nicht gefunden. Bitte überprüfen Sie die URL und versuchen Sie es erneut."
+    },
+    "main": {
+        "title": "Startseite",
+        "description": "Entdecken Sie unsere Dienste und schützen Sie noch heute Ihre digitale Seele!"
+    },
+    "hub": {
+        "title": "Hub",
+        "description": "Verwalten Sie Ihre Dienste und Einstellungen in unserem sicheren Hub."
+    },
+    "souls": {
+        "title": "Seelen",
+        "description": "Treten Sie der Seelengemeinschaft bei und teilen Sie Ihre Erfahrungen mit anderen."
+    },
+    "store": {
+        "title": "Shop",
+        "description": "Kaufen Sie unsere Dienstleistungen und Produkte, um Ihre digitale Seele zu schützen."
+    },
+    "pay": {
+        "title": "Zahlungen",
+        "description": "Verwalten Sie Ihre Zahlungen und Abonnements auf sichere Weise."
+    },
+    "common": {
+        "mainPage": "Hauptseite",
+        "socials": "Gemeinschaft",
+        "love": "Liebe",
+        "home": "Home",
+        "video": "Video",
+        "settings": "Einstellungen",
+        "news": "Neuigkeiten",
+        "about": "Über uns",
+        "contact": "Kontakt",
+        "allRightsReserved": "Alle Rechte vorbehalten.",
+        "openSiteSoon": "Website demnächst verfügbar"
+    }
+}

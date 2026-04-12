@@ -5,6 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "build": "git submodule update --init --recursive && npx tsc && node copyFiles.js",
+    "dev": "tsc && node copyFiles.js && npx wrangler dev index.ts --host securesouls.test --remote=false --local-protocol=http --ip=0.0.0.0 --port=8787 --persist-to=./.wrangler/v3",
     "deploy": "npx wrangler deploy"
   },
   "repository": {
@@ -22,6 +23,6 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260118.0",
     "typescript": "^5.9.3",
-    "wrangler": "^4.59.2"
+    "wrangler": "^4.81.1"
   }
 }

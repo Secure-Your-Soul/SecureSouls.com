@@ -1,0 +1,59 @@
+{
+    "auth": {
+        "title": "Login",
+        "description": "Log in to access your account and manage your services."
+    },
+    "blog": {
+        "title": "Blog",
+        "description": "Read our latest articles and safety tips for everyday life."
+    },
+    "detector": {
+        "title": "Detector",
+        "description": "Check for scammers and secure your digital soul against threats."
+    },
+    "deniskontek": {
+        "title": "Denis Kontek",
+        "description": "Meet our founder and digital security expert."
+    },
+    "error": {
+        "title": "An Error Occurred",
+        "description": "Something went wrong. Please try again later.",
+        "errorPage": "Error Page",
+        "unauthorized": "Unauthorized access.",
+        "serverError": "Server error occurred. Please try again later.",
+        "notFound": "Page not found. Please check the URL and try again."
+    },
+    "main": {
+        "title": "Home",
+        "description": "Discover our services and secure your digital soul today!"
+    },
+    "hub": {
+        "title": "Hub",
+        "description": "Manage your services and settings in our secure hub."
+    },
+    "souls": {
+        "title": "Souls",
+        "description": "Join the souls community and share your experiences with others."
+    },
+    "store": {
+        "title": "Store",
+        "description": "Buy our services and products to secure your digital soul."
+    },
+    "pay": {
+        "title": "Payments",
+        "description": "Manage your payments and subscriptions securely."
+    },
+    "common": {
+        "mainPage": "Home Page",
+        "socials": "Community",
+        "love": "Love",
+        "home": "Home",
+        "video": "Video",
+        "settings": "Settings",
+        "news": "News",
+        "about": "About Us",
+        "contact": "Contact",
+        "allRightsReserved": "All rights reserved.",
+        "openSiteSoon": "Site coming soon"
+    }
+}

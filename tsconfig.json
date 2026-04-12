@@ -26,7 +26,9 @@
     /* --- STRUKTURA PROJEKTU (TWÓJ UKŁAD) --- */
     "rootDir": "./", // Szukaj plików zaczynając od tego folderu.
     "outDir": "./dist", // Folder wynikowy (blokowany dla bezpieczeństwa).
-    "baseUrl": "./", // Punkt bazowy dla ścieżek.
+    "paths": {
+      "*": ["./*"]
+    }, // Pozwala na importowanie plików bez rozszerzeń.
 
     /* --- BLOKADA ŚMIECI I MAP (STERYLNOŚĆ) --- */
     "noEmit": false, // TS ma TYLKO sprawdzać błędy, zero plików na dysku.
@@ -42,7 +44,7 @@
     "checkJs": false, // Nie sprawdzaj plików JS (bo ich nie ma).
     "isolatedModules": true, // Gwarantuje bezpieczeństwo kompilacji plik po pliku.
     "skipLibCheck": true, // Ignoruj błędy w node_modules (oszczędza czas).
-    "forceConsistentCasingInFileNames": true // Pilnuje wielkości liter w nazwach plików.
+    "forceConsistentCasingInFileNames": true, // Pilnuje wielkości liter w nazwach plików.
   },
   "include": [
     "index.ts", // Główny plik SoulEngine.
