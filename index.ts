@@ -17,8 +17,9 @@ const CONFIG: {
   }
 };
 const startYear = 2023; // Rok założenia Twojego projektu/firmy
-const currentYear = new Date().getFullYear();
-async function renderError(env: any, lang: string, errorKey: string, status: number, cachedTranslations?: any): Promise<Response> {
+let cachedYear = new Date().getFullYear();
+let lastCheck = Date.now();
+async function renderError(env: any, lang: string, errorKey: string, status: number, cachedTranslations?: any, debugMessage?: string): Promise<Response> {
   // 1. Pobieramy tylko HTML (bo JSON-a już mamy lub zaraz dostaniemy)
   const res = await env.ASSETS.fetch(new Request("http://internal/Error/index.html"));
   
@@ -34,7 +35,9 @@ async function renderError(env: any, lang: string, errorKey: string, status: num
   if (res.ok) {
     // 2. Pobieramy konkretne teksty z JSON-a
     const errorTitle = translations.error?.title || "Error";
-    const errorMessage = translations.error?.[errorKey] || "An unexpected error occurred.";
+    // Jeśli mamy debugMessage, doklejamy go do wiadomości błędu
+    const errorMessage = (translations.error?.[errorKey] || "An unexpected error occurred.") + 
+                         (debugMessage ? `<br><small style="color:red">${debugMessage}</small>` : "");
     const errorPage = translations.error?.errorPage || "Error Page";
 
     // 3. Wstrzykujemy gotowe teksty prosto w HTML (zastępujemy tagi)
@@ -43,7 +46,7 @@ async function renderError(env: any, lang: string, errorKey: string, status: num
       .replace(/<h1 data-i18n="error.errorPage"><\/h1>/, `<h1>${errorPage}</h1>`)
       .replace(/<h2 data-i18n="error.title"><\/h2>/, `<h2>${errorTitle}</h2>`)
       .replace(/<p data-i18n="error.description"><\/p>/, `<p>${errorMessage}</p>`)
-      .replace("</footer>", `&copy; ${currentYear > startYear ? `${startYear}–${currentYear}` : `${startYear}`} ${CONFIG.Company.legalName}. ${translations.common.allRightsReserved}` + "</footer>")
+      .replace("</footer>", `&copy; ${cachedYear > startYear ? `${startYear}–${cachedYear}` : `${startYear}`} ${CONFIG.Company.legalName}. ${translations.common.allRightsReserved}` + "</footer>")
       // Sprzątanie
       .replace(/<!--[\s\S]*?-->/g, "").replace(/>\s+</g, "><").trim();
   }
@@ -79,20 +82,30 @@ async function preloadTranslations(env: Env) {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     if (!isPreloaded) await preloadTranslations(env);
+    const now = Date.now();
+    
+    // Odśwież rok tylko jeśli minęło więcej niż 24 godziny od ostatniego sprawdzenia
+    if (now - lastCheck > 86400000) { 
+      cachedYear = new Date().getFullYear();
+      lastCheck = now;
+    }
+
+    const currentYear = cachedYear;
     const url = new URL(request.url);
     const host = url.hostname;
     
     // Logika wykrywania: jeśli 2 człony -> main. Jeśli 3 -> subdomena.
     const parts = host.split(".");
     CONFIG.Company.domain = parts.length >= 2 ? parts.slice(-2).join(".") : host;
-    const subdomain = parts.length > 2 ? parts[0].toLowerCase() : "Main";
+    const subdomain = parts.length > 2 ? parts[0].toLowerCase() : "main";
+    const capitalizedSubdomain = subdomain.charAt(0).toUpperCase() + subdomain.slice(1);
     // 2. Wykrywanie języka użytkownika
     const requestedLang = [url.pathname.split("/")[1]?.toLowerCase(), request.headers.get("Accept-Language")?.split(",")[0].split("-")[0].toLowerCase()].find(lang => supportedLangs.includes(lang || "")) || "en";
     // 3. Wczytujemy plik tłumaczeń.
     const translations = translationCache.get(requestedLang) || translationCache.get("en");
 
     // Fallback do błędu, jeśli subdomena nie istnieje w rejestrze
-    const app = translations[subdomain.toLowerCase()] || translations["error"];
+    const app = translations[subdomain] || translations["error"];
     const method = request.method;
     const pathname = url.pathname;
     try {
@@ -102,7 +115,7 @@ export default {
             // 1. GŁÓWNA STRONA
             if (pathname === "/" || pathname === "" || ["/", "", ...supportedLangs.map(l => `/${l}`), ...supportedLangs.map(l => `/${l}/`)].includes(pathname)) {
               const response = await env.ASSETS.fetch(
-                new Request("http://internal" + `/${subdomain}/index.html`),
+                new Request("http://internal" + `/${capitalizedSubdomain}/index.html`),
               );
     
               if (!response.ok) throw new Error(`Resource not found: ${pathname}`);
@@ -308,7 +321,7 @@ export default {
             // 2. PLIKI STATYCZNE (Dozwolone tylko te, które wskażesz)
             const allowedExtensions = [".js", ".css", ".png", ".jpg", ".jpeg", ".svg", ".avif", ".ico", ".webmanifest", ".xml", ".json"];
             if (allowedExtensions.some((ext) => pathname.endsWith(ext))) {
-              const assetPath = `/${subdomain}${pathname}`.replace(/\/+/g, "/");
+              const assetPath = `/${capitalizedSubdomain}${pathname}`.replace(/\/+/g, "/");
               return await env.ASSETS.fetch(
                 new Request("http://internal" + assetPath),
               );
@@ -317,7 +330,6 @@ export default {
           case "POST":
           default:
             return await renderError(env, requestedLang, "unauthorized", 405);
-            return new Response("Method Not Allowed", { status: 405 });
             break;
         }
       } else {
@@ -328,7 +340,6 @@ export default {
             break;
           default:
             return await renderError(env, requestedLang, "unauthorized", 405);
-            return new Response("Method Not Allowed", { status: 405 });
             break;
         }
       }
@@ -340,7 +351,7 @@ export default {
   // --- BLOK 4: BŁĘDY KODU / SERWERA ---
   console.error(e); // Warto widzieć co walnęło w logach
   const errorTrans = translationCache.get(requestedLang) || translationCache.get("en");
-  return await renderError(env, requestedLang, "serverError", 500, errorTrans);
+  return await renderError(env, requestedLang, "serverError", 500, errorTrans, e.message);
 }
   },
 };
