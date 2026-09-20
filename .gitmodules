@@ -36,7 +36,7 @@
 
 [submodule "Souls"]
 	path = Souls
-	url = https://github.com/Secure-Your-Soul/Souls.git
+	url = https://github.com/Secure-Your-Soul/WebSouls.git
 
 [submodule "Store"]
 	path = Store
