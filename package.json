@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/8989denis/SecureSouls.com#readme",
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260118.0",
+    "@cloudflare/workers-types": "^5.20260918.1",
     "typescript": "^5.9.3",
     "wrangler": "^4.135.0"
   }
