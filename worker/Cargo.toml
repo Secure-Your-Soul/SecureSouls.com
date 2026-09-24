@@ -1,0 +1,15 @@
+[package]
+name = "securesoulscom"
+version = "0.0.1"
+edition = "2024"
+authors = ["Denis Kontek <deniskontek@securesouls.com>"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+soulsapi = { path = "../api/Rust/api", features = ["full"] }
+worker = { version = "0.8", features = ['http', 'axum'] }
+worker-macros = { version = "0.8", features = ['http'] }
+axum = { version = "0.8", default-features = false }
+tower-service = "0.3.3"
