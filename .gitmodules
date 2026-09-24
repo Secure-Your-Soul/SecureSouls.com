@@ -1,43 +1,36 @@
+[submodule "Api"]
+	path = api
+	url = https://github.com/Secure-Your-Soul/SoulsAPI.git
 [submodule "Auth"]
-	path = Auth
+	path = domains/securesouls.com/websites/Auth
 	url = https://github.com/Secure-Your-Soul/Auth.git
-
 [submodule "Blog"]
-	path = Blog
+	path = domains/securesouls.com/websites/Blog
 	url = https://github.com/Secure-Your-Soul/Blog.git
-
 [submodule "Dashboard"]
-	path = Dashboard
+	path = domains/securesouls.com/websites/Dashboard
 	url = https://github.com/Secure-Your-Soul/Dashboard.git
-
 [submodule "DenisKontek"]
-	path = DenisKontek
+	path = domains/securesouls.com/websites/DenisKontek
 	url = https://github.com/Secure-Your-Soul/DenisKontek.git
-
 [submodule "Detector"]
-	path = Detector
+	path = domains/securesouls.com/websites/Detector
 	url = https://github.com/Secure-Your-Soul/Detector.git
-
 [submodule "Error"]
-	path = Error
+	path = domains/securesouls.com/websites/Error
 	url = https://github.com/Secure-Your-Soul/Error.git
-
 [submodule "Hub"]
-	path = Hub
+	path = domains/securesouls.com/websites/Hub
 	url = https://github.com/Secure-Your-Soul/Hub.git
-
 [submodule "Main"]
-	path = Main
+	path = domains/securesouls.com/websites/Main
 	url = https://github.com/Secure-Your-Soul/Main.git
-
 [submodule "Pay"]
-	path = Pay
+	path = domains/securesouls.com/websites/Pay
 	url = https://github.com/Secure-Your-Soul/Pay.git
-
 [submodule "Souls"]
-	path = Souls
+	path = domains/securesouls.com/websites/Souls
 	url = https://github.com/Secure-Your-Soul/WebSouls.git
-
 [submodule "Store"]
-	path = Store
+	path = domains/securesouls.com/websites/Store
 	url = https://github.com/Secure-Your-Soul/Store.git
