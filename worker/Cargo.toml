@@ -8,7 +8,7 @@ authors = ["Denis Kontek <deniskontek@securesouls.com>"]
 crate-type = ["cdylib"]
 
 [dependencies]
-soulsapi = { path = "../api/Rust/api", features = ["full"] }
+api = { git = "https://github.com/Secure-Your-Soul/SoulAPI.git", branch = "feature/code-rewrite-to-rust-wasm" }
 worker = { version = "0.8", features = ['http', 'axum'] }
 worker-macros = { version = "0.8", features = ['http'] }
 axum = { version = "0.8", default-features = false }
