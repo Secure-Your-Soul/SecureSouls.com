@@ -1,6 +1,3 @@
-[submodule "Api"]
-	path = api
-	url = https://github.com/Secure-Your-Soul/SoulsAPI.git
 [submodule "Auth"]
 	path = domains/securesouls.com/websites/Auth
 	url = https://github.com/Secure-Your-Soul/Auth.git
