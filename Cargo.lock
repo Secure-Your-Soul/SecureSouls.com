@@ -449,9 +449,10 @@ checksum = "9774ba4a74de5f7b1c1451ed6cd5285a32eddb5cccb8cc655a4e50009e06477f"
 
 [[package]]
 name = "securesoulscom"
-version = "0.0.1-Alpha"
+version = "0.0.1"
 dependencies = [
  "axum",
+ "souls",
  "tower-service",
  "worker",
  "worker-macros",
@@ -534,6 +535,25 @@ name = "smallvec"
 version = "1.16.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ba467056f1b547ed52077911161fc86985becbc60e8e1857c8a144dab0def891"
+
+[[package]]
+name = "souls"
+version = "0.0.1"
+source = "git+https://github.com/Secure-Your-Soul/SoulAPI.git?branch=feat%2Frust-rewrite#731c0ee6246c6c479ab613dbd94cab89d32290b3"
+dependencies = [
+ "souls-crypt",
+ "souls-http",
+]
+
+[[package]]
+name = "souls-crypt"
+version = "0.0.1"
+source = "git+https://github.com/Secure-Your-Soul/SoulAPI.git?branch=feat%2Frust-rewrite#731c0ee6246c6c479ab613dbd94cab89d32290b3"
+
+[[package]]
+name = "souls-http"
+version = "0.0.1"
+source = "git+https://github.com/Secure-Your-Soul/SoulAPI.git?branch=feat%2Frust-rewrite#731c0ee6246c6c479ab613dbd94cab89d32290b3"
 
 [[package]]
 name = "stable_deref_trait"
