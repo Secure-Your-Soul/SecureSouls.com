@@ -1,7 +1,7 @@
 use axum::{routing::get, Router};
 use tower_service::Service;
 use worker::*;
-use soulsapi::http;
+use souls::http;
 
 fn router() -> Router {
     Router::new().route("/", get(root))
