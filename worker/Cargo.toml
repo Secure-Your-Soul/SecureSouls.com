@@ -12,5 +12,5 @@ souls = { git = "https://github.com/Secure-Your-Soul/SoulAPI.git", branch = "fea
 worker = { version = "0.8", features = ['http', 'axum'] }
 worker-macros = { version = "0.8", features = ['http'] }
 axum = { version = "0.8", default-features = false }
-maud = { version = "0.26", features = ["axum"] }
-tower-service = "0.3.3"
+maud = { version = "0.27", features = ["axum"] }
+tower-service = "0.3"
