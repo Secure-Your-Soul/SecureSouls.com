@@ -1,11 +1,6 @@
-use axum::{routing::get, Router};
-use tower_service::Service;
 use worker::*;
-use souls::http;
-
-fn router() -> Router {
-    Router::new().route("/", get(root))
-}
+use souls::http::{Config, create_router};
+use tower_service::Service;
 
 #[event(fetch)]
 async fn fetch(
@@ -13,10 +8,6 @@ async fn fetch(
     _env: Env,
     _ctx: Context,
 ) -> Result<axum::http::Response<axum::body::Body>> {
-    http::hi();
-    Ok(router().call(req).await?)
-}
-
-pub async fn root() -> &'static str {
-    "Hello Axum!"
+    let config = Config::default();
+    Ok(create_router(config).call(req).await?)
 }
