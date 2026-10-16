@@ -16,9 +16,7 @@ description = "SecureSouls.com using cloudflare workers for our websites."
 crate-type = ["cdylib"]
 
 [dependencies]
-souls = { git = "https://github.com/Secure-Your-Soul/SoulAPI.git", branch = "feat/rust-rewrite", features = ["full"] }
+souls = { git = "https://github.com/Secure-Your-Soul/SoulAPI.git", branch = "feat/rust-rewrite", features = ["http"] }
 worker = { version = "0.8", features = ['http', 'axum'] }
-worker-macros = { version = "0.8", features = ['http'] }
 axum = { version = "0.8", default-features = false }
-maud = { version = "0.27", features = ["axum"] }
 tower-service = "0.3"
