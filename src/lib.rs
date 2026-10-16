@@ -9,6 +9,5 @@ async fn fetch(
     _env: Env,
     _ctx: Context,
 ) -> Result<axum::http::Response<axum::body::Body>> {
-    let config = Config::default();
-    Ok(create_router(config).call(req).await?)
+    Ok(create_router(Config::default()).call(req).await?)
 }
