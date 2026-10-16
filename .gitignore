@@ -1,5 +1,3 @@
-**/target/*
-build
-
-### Wrangler ###
-.wrangler/
+node_modules
+dist
+.wrangler
