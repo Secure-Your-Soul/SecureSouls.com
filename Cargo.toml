@@ -1,0 +1,22 @@
+[package]
+name = "securesoulscom"
+version = "0.0.1"
+edition = "2024"
+rust-version = "1.98.1"
+license = "Apache-2.0"
+authors = ["Denis Kontek <deniskontek@securesouls.com>"]
+keywords = ["SecureSouls.com", "secure-your-soul", "cloudflare workers"]
+categories = ["web-programming::http-server", "asynchronous"]
+readme = "README.md"
+repository = "https://github.com/Secure-Your-Soul/SecureSouls.com"
+homepage = "https://github.com/Secure-Your-Soul/SecureSouls.com"
+description = "SecureSouls.com using cloudflare workers for our websites."
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+souls = { git = "https://github.com/Secure-Your-Soul/SoulAPI.git", branch = "feat/rust-rewrite", features = ["http"] }
+worker = { version = "0.8", features = ['http', 'axum'] }
+axum = { version = "0.8", default-features = false }
+tower-service = "0.3"
