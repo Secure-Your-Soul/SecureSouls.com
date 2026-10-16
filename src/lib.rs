@@ -1,6 +1,7 @@
-use worker::*;
+#![allow(clippy::multiple_crate_versions)]
 use souls::http::{Config, create_router};
 use tower_service::Service;
+use worker::{Context, Env, HttpRequest, Result, event};
 
 #[event(fetch)]
 async fn fetch(
