@@ -488,11 +488,9 @@ name = "securesoulscom"
 version = "0.0.1"
 dependencies = [
  "axum",
- "maud",
  "souls",
  "tower-service",
  "worker",
- "worker-macros",
 ]
 
 [[package]]
